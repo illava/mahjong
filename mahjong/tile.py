@@ -116,6 +116,38 @@ class TilesConverter(object):
 
         return results
 
+        """
+        Method to convert one line string tiles format to the 136 array, like
+        "123s456p789m11222z". 's' stands for sou, 'p' stands for pin, 
+        'm' stands for man, 'z' or 'h' stands for honor.
+        You can pass r or 0 instead of 5 for it to become a red five from
+        that suit. To prevent old usage without red,
+        has_aka_dora has to be True for this to do that.
+        We need it to increase readability of our tests
+        """
+        sou = ""
+        pin = ""
+        man = ""
+        honors = ""
+		
+        split_start = 0
+		
+        for i, char in enumerate(string):
+            if char == 'm':
+                man += string[split_start: i]
+                split_start = i + 1
+            if char == 'p':
+                pin += string[split_start: i]
+                split_start = i + 1
+            if char == 's':
+                sou += string[split_start: i]
+                split_start = i + 1
+            if char == 'z' or char == 'h':
+                honors += string[split_start: i]
+                split_start = i + 1
+				
+        return TilesConverter.string_to_136_array(sou, pin, man, honors, has_aka_dora)
+
     @staticmethod
     def string_to_34_array(sou=None, pin=None, man=None, honors=None):
         """
@@ -123,6 +155,16 @@ class TilesConverter(object):
         We need it to increase readability of our tests
         """
         results = TilesConverter.string_to_136_array(sou, pin, man, honors)
+        results = TilesConverter.to_34_array(results)
+        return results
+
+    @staticmethod
+    def one_line_string_to_34_array(string=None):
+        """
+        Method to convert one line string tiles format to the 34 array
+        We need it to increase readability of our tests
+        """
+        results = TilesConverter.one_line_string_to_136_array(string)
         results = TilesConverter.to_34_array(results)
         return results
 
